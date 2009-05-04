@@ -1,8 +1,9 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 1
+%define release %mkrel 2
 
-%define _requires_exceptions perl(Authen::.*)
+%define _requires_exceptions perl(\\(Authen::.*\\|Smokeping::.*\\))
+%define _provides_exceptions perl(.*)
 
 Name:		%{name}
 Version:	%{version}
@@ -37,7 +38,7 @@ SmokePing keeps track of your network latency:
 
 %prep
 %setup -q
-%patch -p 1
+%patch0 -p 1
 
 find lib -name *.pm | xargs chmod 644
 
@@ -63,6 +64,14 @@ cp -pr htdocs/script %{buildroot}%{_var}/www/%{name}
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -pr lib %{buildroot}%{_datadir}/%{name}
+
+# drop private libraries
+rm -rf %{buildroot}%{_datadir}/%{name}/lib/BER.pm
+rm -rf %{buildroot}%{_datadir}/%{name}/lib/CGI
+rm -rf %{buildroot}%{_datadir}/%{name}/lib/Config
+rm -rf %{buildroot}%{_datadir}/%{name}/lib/Digest
+rm -rf %{buildroot}%{_datadir}/%{name}/lib/JSON*
+rm -rf %{buildroot}%{_datadir}/%{name}/lib/SNMP_*
 
 install -d -m 755 %{buildroot}%{_sysconfdir}/%{name}
 install -m 644 etc/basepage.html.dist \
