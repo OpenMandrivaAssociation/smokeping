@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 3
+%define release %mkrel 4
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
@@ -16,6 +16,7 @@ Source:     http://oss.oetiker.ch/smokeping/pub/%{name}-%{version}.tar.gz
 Patch0:     %{name}-2.4.2-fhs.patch
 requires:   rrdtool
 requires:   fping
+requires:   perl(Qooxdoo::JSONRPC)
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
 Requires(postun):	rpm-helper >= 0.16
@@ -62,16 +63,8 @@ cp -pr htdocs/cropper %{buildroot}%{_var}/www/%{name}
 cp -pr htdocs/resource %{buildroot}%{_var}/www/%{name}
 cp -pr htdocs/script %{buildroot}%{_var}/www/%{name}
 
-install -d -m 755 %{buildroot}%{_datadir}/%{name}
-cp -pr lib %{buildroot}%{_datadir}/%{name}
-
-# drop private libraries
-rm -rf %{buildroot}%{_datadir}/%{name}/lib/BER.pm
-rm -rf %{buildroot}%{_datadir}/%{name}/lib/CGI
-rm -rf %{buildroot}%{_datadir}/%{name}/lib/Config
-rm -rf %{buildroot}%{_datadir}/%{name}/lib/Digest
-rm -rf %{buildroot}%{_datadir}/%{name}/lib/JSON*
-rm -rf %{buildroot}%{_datadir}/%{name}/lib/SNMP_*
+install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib
+cp -pr lib/Smokeping* %{buildroot}%{_datadir}/%{name}/lib
 
 install -d -m 755 %{buildroot}%{_sysconfdir}/%{name}
 install -m 644 etc/basepage.html.dist \
