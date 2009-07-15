@@ -52,16 +52,16 @@ install -d -m 755 %{buildroot}%{_bindir}
 install -m 755 bin/smokeping.dist %{buildroot}%{_bindir}/smokeping
 install -m 755 bin/tSmoke.dist %{buildroot}%{_bindir}/tSmoke
 
-install -d -m 755 %{buildroot}%{_var}/www/%{name}
+install -d -m 755 %{buildroot}%{_datadir}/%{name}/www
 install -m 755 htdocs/smokeping.cgi.dist \
-    %{buildroot}%{_var}/www/%{name}/smokeping.cgi
+    %{buildroot}%{_datadir}/%{name}/www/smokeping.cgi
 install -m 755 htdocs/tr.cgi.dist \
-    %{buildroot}%{_var}/www/%{name}/tr.cgi
+    %{buildroot}%{_datadir}/%{name}/www/tr.cgi
 install -m 644 htdocs/tr.html \
-    %{buildroot}%{_var}/www/%{name}/tr.html
-cp -pr htdocs/cropper %{buildroot}%{_var}/www/%{name}
-cp -pr htdocs/resource %{buildroot}%{_var}/www/%{name}
-cp -pr htdocs/script %{buildroot}%{_var}/www/%{name}
+    %{buildroot}%{_datadir}/%{name}/www/tr.html
+cp -pr htdocs/cropper %{buildroot}%{_datadir}/%{name}/www
+cp -pr htdocs/resource %{buildroot}%{_datadir}/%{name}/www
+cp -pr htdocs/script %{buildroot}%{_datadir}/%{name}/www
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib
 cp -pr lib/Smokeping* %{buildroot}%{_datadir}/%{name}/lib
@@ -85,9 +85,9 @@ install -d -m 755 %{buildroot}%{_var}/lib/%{name}
 install -d -m 755 %{buildroot}%{_webappconfdir}
 cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
 # %{name} Apache configuration
-Alias /%{name} %{_var}/www/%{name}
+Alias /%{name} %{_datadir}/%{name}/www
 
-<Directory %{_var}/www/%{name}>
+<Directory %{_datadir}/%{name}/www>
     Options ExecCGI
     DirectoryIndex smokeping.cgi
     Allow from all
@@ -107,7 +107,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root)
 %doc README TODO CHANGES CONTRIBUTORS COPYING COPYRIGHT doc
 %config(noreplace) %{_webappconfdir}/%{name}.conf
-%{_var}/www/%{name}
 %{_bindir}/%{name}
 %{_bindir}/tSmoke
 %{_datadir}/%{name}
