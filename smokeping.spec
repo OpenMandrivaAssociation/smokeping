@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 6
+%define release %mkrel 7
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
@@ -87,7 +87,7 @@ install -d -m 755 %{buildroot}%{_var}/lib/%{name}
 install -d -m 755 %{buildroot}%{_webappconfdir}
 cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
 # %{name} Apache configuration
-Alias /%{name}/cache %{_locastatedir}/cache/%{name}
+Alias /%{name}/cache %{_localstatedir}/cache/%{name}
 Alias /%{name} %{_datadir}/%{name}/www
 
 <Directory %{_datadir}/%{name}/www>
@@ -96,7 +96,7 @@ Alias /%{name} %{_datadir}/%{name}/www
     Allow from all
 </Directory>
 
-<Directory %{_locastatedir}/cache/%{name}>
+<Directory %{_localstatedir}/cache/%{name}>
     Allow from all
 </Directory>
 EOF
