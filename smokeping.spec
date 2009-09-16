@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 5
+%define release %mkrel 6
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
@@ -15,9 +15,10 @@ URL:		http://oss.oetiker.ch/smokeping/
 Source0:    http://oss.oetiker.ch/smokeping/pub/%{name}-%{version}.tar.gz
 Source1:    smokeping.init
 Patch0:     %{name}-2.4.2-fhs.patch
-requires:   rrdtool
-requires:   fping
-requires:   perl(Qooxdoo::JSONRPC)
+Requires:   rrdtool
+Requires:   fonts-ttf-dejavu
+Requires:   fping
+Requires:   perl(Qooxdoo::JSONRPC)
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
 Requires(postun):	rpm-helper >= 0.16
@@ -86,11 +87,16 @@ install -d -m 755 %{buildroot}%{_var}/lib/%{name}
 install -d -m 755 %{buildroot}%{_webappconfdir}
 cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
 # %{name} Apache configuration
+Alias /%{name}/cache %{_locastatedir}/cache/%{name}
 Alias /%{name} %{_datadir}/%{name}/www
 
 <Directory %{_datadir}/%{name}/www>
     Options ExecCGI
     DirectoryIndex smokeping.cgi
+    Allow from all
+</Directory>
+
+<Directory %{_locastatedir}/cache/%{name}>
     Allow from all
 </Directory>
 EOF
