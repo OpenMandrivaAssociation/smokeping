@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 4
+%define release %mkrel 5
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
@@ -12,7 +12,8 @@ Summary:	Network latency tracker
 License:	GPL
 Group:		Networking/WWW
 URL:		http://oss.oetiker.ch/smokeping/
-Source:     http://oss.oetiker.ch/smokeping/pub/%{name}-%{version}.tar.gz
+Source0:    http://oss.oetiker.ch/smokeping/pub/%{name}-%{version}.tar.gz
+Source1:    smokeping.init
 Patch0:     %{name}-2.4.2-fhs.patch
 requires:   rrdtool
 requires:   fping
@@ -94,6 +95,9 @@ Alias /%{name} %{_datadir}/%{name}/www
 </Directory>
 EOF
 
+install -d -m 755 %{buildroot}%{_initrddir}
+install -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/smokeping
+
 %clean
 rm -rf %{buildroot}
 
@@ -110,9 +114,10 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 %{_bindir}/tSmoke
 %{_datadir}/%{name}
-%{_var}/cache/%{name}
+%attr(-,apache,apache) %{_var}/cache/%{name}
 %{_var}/lib/%{name}
 %dir %{_sysconfdir}/%{name}
+%{_initrddir}/%{name}
 %config(noreplace) %{_sysconfdir}/%{name}/basepage.html
 %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/smokemail
