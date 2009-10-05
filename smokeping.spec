@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 8
+%define release %mkrel 9
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
@@ -19,6 +19,7 @@ Requires:   rrdtool
 Requires:   fonts-ttf-dejavu
 Requires:   fping
 Requires:   perl(Qooxdoo::JSONRPC)
+Requires:   perl(Config::Grammar)
 Requires:   apache
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
