@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release %mkrel 9
+%define release %mkrel 10
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
@@ -110,10 +110,14 @@ install -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/smokeping
 rm -rf %{buildroot}
 
 %post
+%if %mdkversion < 201010
 %_post_webapp
+%endif
 
 %postun
+%if %mdkversion < 201010
 %_postun_webapp
+%endif
 
 %files
 %defattr(-,root,root)
