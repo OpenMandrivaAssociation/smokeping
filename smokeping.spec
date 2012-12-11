@@ -136,3 +136,53 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/%{name}/tmail
 %config(noreplace) %attr(-,root,apache) %{_sysconfdir}/%{name}/smokeping_secrets
 
+
+
+%changelog
+* Tue Dec 07 2010 Oden Eriksson <oeriksson@mandriva.com> 2.4.2-11mdv2011.0
++ Revision: 614926
+- the mass rebuild of 2010.1 packages
+
+* Tue Jan 19 2010 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-10mdv2010.1
++ Revision: 493885
+- rely on filetrigger for reloading apache configuration begining with 2010.1, rpm-helper macros otherwise
+
+* Mon Oct 05 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-9mdv2010.0
++ Revision: 454033
+- yet another dependency fix
+
+* Tue Sep 29 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-8mdv2010.0
++ Revision: 450935
+- requires apache
+
+* Wed Sep 16 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-7mdv2010.0
++ Revision: 443524
+- fix typo in apache configuration file
+
+* Wed Sep 16 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-6mdv2010.0
++ Revision: 443522
+- fix apache configuration for generated files
+- font dependency
+- ship init script
+- proper perms on cache directory
+
+* Wed Jul 15 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-4mdv2010.0
++ Revision: 396458
+- move web files under %%{_datadir}/%%{name}/www
+- drop last remaining private perl library, packaged separatly
+
+* Wed May 20 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-3mdv2010.0
++ Revision: 377835
+- really fix dependencies
+
+* Mon May 04 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-2mdv2010.0
++ Revision: 371917
+- drop private copies of perl modules
+
+* Sun Oct 12 2008 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-1mdv2009.1
++ Revision: 292954
+- import smokeping
+
+
+* Sun Oct 12 2008 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-1mdv2009.1
+- first mdv release 
