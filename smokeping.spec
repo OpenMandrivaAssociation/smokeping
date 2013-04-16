@@ -1,6 +1,6 @@
 %define name	smokeping
 %define version 2.4.2
-%define release: 12
+%define release: 13
 
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
