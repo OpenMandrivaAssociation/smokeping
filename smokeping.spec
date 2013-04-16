@@ -1,13 +1,9 @@
-%define name	smokeping
-%define version 2.4.2
-%define release: 13
-
 %define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
 %define _provides_exceptions perl(.*)
 
-Name:		%{name}
-Version:	%{version}
-Release:	%{release}
+Name:		smokeping
+Version:	2.4.2
+Release:	13
 Summary:	Network latency tracker
 License:	GPL
 Group:		Networking/WWW
@@ -27,7 +23,6 @@ Requires(postun):	rpm-helper >= 0.16
 BuildRequires:	rpm-helper >= 0.16
 BuildRequires:	rpm-mandriva-setup >= 1.23
 BuildArch:	noarch
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 SmokePing keeps track of your network latency:
