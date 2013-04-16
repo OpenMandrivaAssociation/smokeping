@@ -1,9 +1,9 @@
-%define _requires_exceptions perl(\\(Authen::.*\\|Smokeping.*\\))
-%define _provides_exceptions perl(.*)
+%define __noautoreq 'perl\\(Authen::.*|perl\\(Smokeping.*'
+%define __noautoprov perl(.*)
 
 Name:		smokeping
 Version:	2.4.2
-Release:	13
+Release:	14
 Summary:	Network latency tracker
 License:	GPL
 Group:		Networking/WWW
