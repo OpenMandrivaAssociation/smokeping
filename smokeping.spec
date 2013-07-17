@@ -1,4 +1,4 @@
-%define __noautoreq 'perl\\(Authen::.*|perl\\(Smokeping.*'
+%define __noautoreq 'perl\\(Authen::.*|perl\\(Smokeping.*|/usr/bin/speedy'
 %define __noautoprov perl(.*)
 
 Name:		smokeping
@@ -16,6 +16,7 @@ Requires:   fonts-ttf-dejavu
 Requires:   fping
 Requires:   perl(Qooxdoo::JSONRPC)
 Requires:   perl(Config::Grammar)
+Requires:   perl(CGI::SpeedyCGI)
 Requires:   apache
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
