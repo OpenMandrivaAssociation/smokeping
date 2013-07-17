@@ -3,7 +3,7 @@
 
 Name:		smokeping
 Version:	2.4.2
-Release:	14
+Release:	15
 Summary:	Network latency tracker
 License:	GPL
 Group:		Networking/WWW
@@ -90,11 +90,11 @@ Alias /%{name} %{_datadir}/%{name}/www
 <Directory %{_datadir}/%{name}/www>
     Options ExecCGI
     DirectoryIndex smokeping.cgi
-    Allow from all
+    Require all granted
 </Directory>
 
 <Directory %{_localstatedir}/cache/%{name}>
-    Allow from all
+    Require all granted
 </Directory>
 EOF
 
