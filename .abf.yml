@@ -1,2 +1,6 @@
+removed_sources:
+  smokeping-2.4.2.tar.gz: 055d65c7e3c49cd0d6e8f96242131fe69dc3110e
 sources:
-  "smokeping-2.4.2.tar.gz": 055d65c7e3c49cd0d6e8f96242131fe69dc3110e
+  rrdtool.png: 4a358d5f6a95209a07893a60ba02193123953de7
+  smokeping-2.6.9.tar.gz: 0f37e73de463d8a5aa3b9651635e3837c8347cca
+  smokeping.png: f41864b7ce602b667c5d5056b23e3cf2261db260

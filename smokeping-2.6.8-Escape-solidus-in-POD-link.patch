@@ -1,0 +1,30 @@
+From bdccec0dd8c19c2d7b25a9186c3f26fc4d469ff9 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Petr=20P=C3=ADsa=C5=99?= <ppisar@redhat.com>
+Date: Fri, 26 Jul 2013 10:38:53 +0200
+Subject: [PATCH] Escape solidus in POD link
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+
+Signed-off-by: Petr Písař <ppisar@redhat.com>
+---
+ lib/Smokeping.pm | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/Smokeping.pm b/lib/Smokeping.pm
+index e1ee32c..e1444d9 100644
+--- a/lib/Smokeping.pm
++++ b/lib/Smokeping.pm
+@@ -2609,7 +2609,7 @@ DOC
+ The base directory where SmokePing keeps the files related to the DYNAMIC function.
+ This directory must be writeable by the WWW server. It is also used for temporary
+ storage of slave polling results by the master in 
+-L<the master/slave mode|smokeping_master_slave>.
++L<the masterE<sol>slave mode|smokeping_master_slave>.
+ 
+ If this variable is not specified, the value of C<datadir> will be used instead.
+ DOC
+-- 
+1.8.1.4
+

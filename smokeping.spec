@@ -1,176 +1,146 @@
-%define __noautoreq 'perl\\(Authen::.*|perl\\(Smokeping.*|/usr/bin/speedy'
+%define __noautoreq 'perl\\(Authen::.*|perl\\(Smokeping.*'
 %define __noautoprov perl(.*)
 
-Name:		smokeping
-Version:	2.4.2
-Release:	15
-Summary:	Network latency tracker
-License:	GPL
-Group:		Networking/WWW
-URL:		http://oss.oetiker.ch/smokeping/
-Source0:    http://oss.oetiker.ch/smokeping/pub/%{name}-%{version}.tar.gz
-Source1:    smokeping.init
-Patch0:     %{name}-2.4.2-fhs.patch
-Requires:   rrdtool
-Requires:   fonts-ttf-dejavu
-Requires:   fping
-Requires:   perl(Qooxdoo::JSONRPC)
-Requires:   perl(Config::Grammar)
-Requires:   perl(CGI::SpeedyCGI)
-Requires:   apache
-# webapp macros and scriptlets
-Requires(post):		rpm-helper >= 0.16
-Requires(postun):	rpm-helper >= 0.16
-BuildRequires:	rpm-helper >= 0.16
-BuildRequires:	rpm-mandriva-setup >= 1.23
-BuildArch:	noarch
+Summary:          Latency Logging and Graphing System
+Name:             smokeping
+Version:          2.6.9
+Release:          1
+License:          GPLv2+
+Group:            Networking/WWW
+URL:              http://oss.oetiker.ch/smokeping/
+Source0:          http://oss.oetiker.ch/smokeping/pub/smokeping-%{version}.tar.gz
+Source1:          smokeping.service
+Source3:          http://oss.oetiker.ch/smokeping-demo/img/smokeping.png
+Source4:          http://oss.oetiker.ch/smokeping-demo/img/rrdtool.png
+Source5:          README.urpmi
+Source6:          smokeping-tmpfs.conf
+Source7:          smokeping-httpd24.conf.d
+Patch0:           smokeping-2.6.7-path.patch
+Patch1:           smokeping-2.6.7-config.patch
+Patch2:           smokeping-2.6.7-silence.patch
+Patch3:           smokeping-2.6.7-datadir.patch
+Patch4:           smokeping-2.6.8-Escape-solidus-in-POD-link.patch
+Patch5:           smokeping-2.6.9-remove-date.patch
+BuildRequires:    systemd-units
+BuildRequires:    perl(CGI)
+BuildRequires:    perl(CGI::Fast)
+BuildRequires:    perl(Config::Grammar)
+BuildRequires:    perl(Digest::HMAC_MD5)
+BuildRequires:    perl(FCGI)
+BuildRequires:    perl(File::Basename)
+BuildRequires:    perl(Getopt::Long)
+BuildRequires:    perl(LWP)
+BuildRequires:    perl(Pod::Usage)
+BuildRequires:    perl(POSIX)
+BuildRequires:    perl(RRDs)
+BuildRequires:    perl(SNMP_Session)
+BuildRequires:    perl(SNMP_util) >= 1.13
+BuildRequires:    perl(strict) 
+BuildRequires:    perl(Sys::Hostname)
+BuildRequires:    perl(Sys::Syslog)
+BuildRequires:    perl(URI::Escape)
+BuildRequires:    perl(vars)
+#BuildRequires:    pod2man
+BuildRequires:    automake
+BuildRequires:    autoconf
+Requires:         perl >= 5.6.1
+Requires:         rrdtool >= 1.0.33
+Requires:         fping >= 2.4b2
+Requires:         traceroute
+# Not picked up for some reason
+Requires:         perl(Config::Grammar)
+Requires:         perl(SNMP_util) >= 1.13
+# only httpd supported without config changes
+Requires:         apache
+Requires:         apache-mod_fcgid
+Requires(post):   systemd-units
+Requires(preun):  systemd-units
+Requires(postun): systemd-units
+BuildArch:        noarch
 
 %description
-SmokePing keeps track of your network latency:
-
-    * Best of breed latency visualisation.
-    * Interactive graph exlorer.
-    * Wide range of latency measurment plugins.
-    * Master/Slave System for distributed measurement.
-    * Highly configurable alerting system.
-    * Live Latency Charts with the most 'interesting' graphs.
-    * Free and OpenSource Software written in Perl written by Tobi Oetiker, the
-      creator of MRTG and RRDtool
+SmokePing is a latency logging and graphing system. It consists of a
+daemon process which organizes the latency measurements and a CGI
+which presents the graphs.
 
 %prep
 %setup -q
-%patch0 -p 1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
 
-find lib -name *.pm | xargs chmod 644
+install -p -m 0644 %{SOURCE5} . 
+iconv -f ISO-8859-1 -t utf-8 -o CHANGES.utf8 CHANGES
+touch -r CHANGES CHANGES.utf8 
+mv CHANGES.utf8 CHANGES
+
+# remove some external modules
+rm -f lib/{SNMP_Session,SNMP_util,BER}.pm
 
 %build
+autoreconf -fi
+automake
+autoconf
+%configure --with-htdocs-dir=%{_datadir}/%{name}/htdocs \
+           --disable-silent-rules
 
 %install
-rm -rf %{buildroot}
+%make install DESTDIR=%{buildroot}
 
-install -d -m 755 %{buildroot}%{_bindir}
-install -m 755 bin/smokeping.dist %{buildroot}%{_bindir}/smokeping
-install -m 755 bin/tSmoke.dist %{buildroot}%{_bindir}/tSmoke
+# Some additional dirs and files
+install -d %{buildroot}%{_localstatedir}/lib/%{name}/{rrd,images} \
+                %{buildroot}%{_localstatedir}/run/%{name} \
+                %{buildroot}%{_datadir}/%{name}/cgi
+install -Dp -m 0644 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
+install -Dp -m 0644 %{SOURCE7} %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
+install  -p -m 0644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_datadir}/%{name}/htdocs
+install -Dp -m 0644 %{SOURCE6} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
 
-install -d -m 755 %{buildroot}%{_datadir}/%{name}/www
-install -m 755 htdocs/smokeping.cgi.dist \
-    %{buildroot}%{_datadir}/%{name}/www/smokeping.cgi
-install -m 755 htdocs/tr.cgi.dist \
-    %{buildroot}%{_datadir}/%{name}/www/tr.cgi
-install -m 644 htdocs/tr.html \
-    %{buildroot}%{_datadir}/%{name}/www/tr.html
-cp -pr htdocs/cropper %{buildroot}%{_datadir}/%{name}/www
-cp -pr htdocs/resource %{buildroot}%{_datadir}/%{name}/www
-cp -pr htdocs/script %{buildroot}%{_datadir}/%{name}/www
+# Fix some files
+for f in config basepage.html smokemail tmail smokeping_secrets ; do
+    mv %{buildroot}%{_sysconfdir}/%{name}/$f.dist \
+            %{buildroot}%{_sysconfdir}/%{name}/$f
+done
+mv %{buildroot}%{_sysconfdir}/%{name}/examples __examples
+mv %{buildroot}%{_bindir}/%{name}_cgi %{buildroot}%{_datadir}/%{name}/cgi
+ln -s %{name}_cgi %{buildroot}%{_datadir}/%{name}/cgi/%{name}.fcgi
+rm -f %{buildroot}%{_datadir}/%{name}/htdocs/smokeping.fcgi.dist
 
-install -d -m 755 %{buildroot}%{_datadir}/%{name}/lib
-cp -pr lib/Smokeping* %{buildroot}%{_datadir}/%{name}/lib
+%post
+%systemd_post smokeping.service
 
-install -d -m 755 %{buildroot}%{_sysconfdir}/%{name}
-install -m 644 etc/basepage.html.dist \
-    %{buildroot}%{_sysconfdir}/%{name}/basepage.html
-install -m 644 etc/config.dist \
-    %{buildroot}%{_sysconfdir}/%{name}/config
-install -m 644 etc/smokemail.dist \
-    %{buildroot}%{_sysconfdir}/%{name}/smokemail
-install -m 640 etc/smokeping_secrets.dist \
-    %{buildroot}%{_sysconfdir}/%{name}/smokeping_secrets
-install -m 644 etc/tmail.dist \
-    %{buildroot}%{_sysconfdir}/%{name}/tmail
+%preun
+%systemd_preun smokeping.service
 
-install -d -m 755 %{buildroot}%{_var}/cache/%{name}
-install -d -m 755 %{buildroot}%{_var}/lib/%{name}
-
-# apache configuration
-install -d -m 755 %{buildroot}%{_webappconfdir}
-cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
-# %{name} Apache configuration
-Alias /%{name}/cache %{_localstatedir}/cache/%{name}
-Alias /%{name} %{_datadir}/%{name}/www
-
-<Directory %{_datadir}/%{name}/www>
-    Options ExecCGI
-    DirectoryIndex smokeping.cgi
-    Require all granted
-</Directory>
-
-<Directory %{_localstatedir}/cache/%{name}>
-    Require all granted
-</Directory>
-EOF
-
-install -d -m 755 %{buildroot}%{_initrddir}
-install -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/smokeping
-
-%clean
-rm -rf %{buildroot}
-
-
+%postun
+%systemd_postun_with_restart smokeping.service
 
 %files
-%defattr(-,root,root)
-%doc README TODO CHANGES CONTRIBUTORS COPYING COPYRIGHT doc
-%config(noreplace) %{_webappconfdir}/%{name}.conf
-%{_bindir}/%{name}
+%doc CHANGES CONTRIBUTORS COPYRIGHT LICENSE README TODO README.urpmi
+%doc __examples/*
+%{_sbindir}/%{name}
+%{_bindir}/smokeinfo
 %{_bindir}/tSmoke
-%{_datadir}/%{name}
-%attr(-,apache,apache) %{_var}/cache/%{name}
-%{_var}/lib/%{name}
+%{_unitdir}/%{name}.service
 %dir %{_sysconfdir}/%{name}
-%{_initrddir}/%{name}
+%attr(0640, root, apache) %config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/basepage.html
-%config(noreplace) %{_sysconfdir}/%{name}/config
 %config(noreplace) %{_sysconfdir}/%{name}/smokemail
+%attr(0640, root, root) %config(noreplace) %{_sysconfdir}/%{name}/smokeping_secrets
 %config(noreplace) %{_sysconfdir}/%{name}/tmail
-%config(noreplace) %attr(-,root,apache) %{_sysconfdir}/%{name}/smokeping_secrets
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}.conf
+%config(noreplace) %{_sysconfdir}/tmpfiles.d/%{name}.conf
+%{_datadir}/%{name}
+%dir %{_localstatedir}/lib/%{name}
+%{_localstatedir}/lib/%{name}/rrd
+%{_localstatedir}/run/%{name}
+%attr(0755, apache, root) %{_localstatedir}/lib/%{name}/images
+%{_mandir}/man1/%{name}*.1*
+%{_mandir}/man1/tSmoke.1*
+%{_mandir}/man3/Smokeping_*.3*
+%{_mandir}/man5/%{name}_*.5*
+%{_mandir}/man7/%{name}_*.7*
 
-
-
-%changelog
-* Tue Dec 07 2010 Oden Eriksson <oeriksson@mandriva.com> 2.4.2-11mdv2011.0
-+ Revision: 614926
-- the mass rebuild of 2010.1 packages
-
-* Tue Jan 19 2010 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-10mdv2010.1
-+ Revision: 493885
-- rely on filetrigger for reloading apache configuration begining with 2010.1, rpm-helper macros otherwise
-
-* Mon Oct 05 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-9mdv2010.0
-+ Revision: 454033
-- yet another dependency fix
-
-* Tue Sep 29 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-8mdv2010.0
-+ Revision: 450935
-- requires apache
-
-* Wed Sep 16 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-7mdv2010.0
-+ Revision: 443524
-- fix typo in apache configuration file
-
-* Wed Sep 16 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-6mdv2010.0
-+ Revision: 443522
-- fix apache configuration for generated files
-- font dependency
-- ship init script
-- proper perms on cache directory
-
-* Wed Jul 15 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-4mdv2010.0
-+ Revision: 396458
-- move web files under %%{_datadir}/%%{name}/www
-- drop last remaining private perl library, packaged separatly
-
-* Wed May 20 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-3mdv2010.0
-+ Revision: 377835
-- really fix dependencies
-
-* Mon May 04 2009 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-2mdv2010.0
-+ Revision: 371917
-- drop private copies of perl modules
-
-* Sun Oct 12 2008 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-1mdv2009.1
-+ Revision: 292954
-- import smokeping
-
-
-* Sun Oct 12 2008 Guillaume Rousse <guillomovitch@mandriva.org> 2.4.2-1mdv2009.1
-- first mdv release 

@@ -1,0 +1,79 @@
+diff --git a/bin/smokeinfo b/bin/smokeinfo
+index caf77d2..becfca9 100755
+--- a/bin/smokeinfo
++++ b/bin/smokeinfo
+@@ -2,10 +2,7 @@
+ use strict;
+ use warnings;
+ 
+-use FindBin;
+-# PERL5LIB
+-use lib "$FindBin::Bin/../thirdparty/lib/perl5";
+-use lib "$FindBin::Bin/../lib";
++use lib qw(/usr/share/smokeping);
+ 
+ use Smokeping::Info;
+ use Getopt::Long 2.25 qw(:config no_ignore_case);
+diff --git a/bin/smokeping b/bin/smokeping
+index f6b95b8..da0663e 100755
+--- a/bin/smokeping
++++ b/bin/smokeping
+@@ -4,14 +4,11 @@
+ use strict;
+ use warnings;
+ 
+-use FindBin;
+-# PERL5LIB
+-use lib "$FindBin::Bin/../thirdparty/lib/perl5";
+-use lib "$FindBin::Bin/../lib";
++use lib qw(/usr/share/smokeping);
+ 
+ use Smokeping;
+  
+-Smokeping::main("$FindBin::Bin/../etc/config");
++Smokeping::main("/etc/smokeping/config");
+ 
+ =head1 NAME
+ 
+diff --git a/bin/smokeping_cgi b/bin/smokeping_cgi
+index 6af8bf8..07ee3fe 100755
+--- a/bin/smokeping_cgi
++++ b/bin/smokeping_cgi
+@@ -4,10 +4,7 @@
+ use strict;
+ use warnings;
+ 
+-use FindBin;
+-# PERL5LIB
+-use lib "$FindBin::Bin/../thirdparty/lib/perl5";
+-use lib "$FindBin::Bin/../lib";
++use lib qw(/usr/share/smokeping);
+ 
+ # don't bother with zombies
+ $SIG{CHLD} = 'IGNORE';
+@@ -18,7 +15,7 @@ use Smokeping;
+ 
+ use CGI::Fast;
+ 
+-my $cfg = (shift @ARGV) || "$FindBin::Bin/../etc/config";
++my $cfg = (shift @ARGV) || "/etc/smokeping/config";
+ 
+ 
+ while (my $q = new CGI::Fast) {
+diff --git a/bin/tSmoke b/bin/tSmoke
+index d7d98bd..91e14cc 100755
+--- a/bin/tSmoke
++++ b/bin/tSmoke
+@@ -51,10 +51,8 @@ use warnings;
+ # -- Getopt::Long
+ #
+ # Point the lib variables to your implementation
+-use FindBin;
+-# PERL5LIB
+-use lib "$FindBin::Bin/../thirdparty/lib/perl5";
+-use lib "$FindBin::Bin/../lib";
++
++use lib qw(/usr/share/smokeping);
+ 
+ use Smokeping;
+ use Net::SMTP;

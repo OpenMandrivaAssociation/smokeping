@@ -1,0 +1,88 @@
+Some useful information about smokeping as packaged by Fedora
+-------------------------------------------------------------
+
+To use the package
+------------------
+
+ o Define you targets in /etc/smokeping/config
+
+   [ There are some examples defined all ready, more examples in
+   
+     /usr/share/doc/smokeping-2.6.7/config.* 
+
+     More docs are available as man pages, to list them try:
+
+     $ rpm -ql smokeping | grep /usr/share/man | less
+   ]
+
+ o Start the smokeping daemon:
+
+   $ service smokeping start
+   $ service smokeping enable
+
+ o Start Apache httpd webserver:
+
+   $ service httpd start
+   $ service smokeping enable
+
+ o smokeping in it's full glory is now serving you at the following address:
+  
+   http://localhost/smokeping/sm.cgi
+
+   Please visit with your browser of choice. You might have to wait some
+   time until the daemon has got some data to see something useful
+
+   If you want to access smokeping from a remote host, please edit
+   /etc/httpd/conf.d/smokeping.conf
+
+Caveats
+-------
+
+ Default config is to enable Fast CGI support. Please edit
+
+   /etc/httpd/conf.d/smokeping.conf 
+
+ to switch to plain cgi.
+
+ SELinux
+ -------
+ 
+ If your system are using SELinux, smokeping will not work, unless you
+ execute the following commands:
+
+  $ chcon -v -R --type=httpd_sys_script_exec_t /usr/share/smokeping/smokeping{_cgi,fcgi}
+  $ chcon -v -R --type=httpd_sys_content_t /var/lib/smokeping/
+
+ 
+ These rules (and then some?) may be needed too:
+
+ module smokeudpsocket 1.0;
+
+   require {
+        type httpd_sys_script_t;
+        class udp_socket connect;
+   }
+
+   #============= httpd_sys_script_t ==============
+   allow httpd_sys_script_t self:udp_socket connect;
+
+
+ Need for additional perl modules
+ --------------------------------
+
+ The TacacsPlus, Radius, SSH probes needs the Authen::Tacas and/or
+ Authen::Radius, Net:OpenSSH CPAN modules, in order to use these probes, please
+ install these modules.
+
+ Smoketrace
+ ----------
+ Smoketrace is not part of smokeping package any longer.
+
+
+Happy pinging!
+
+
+   
+   
+
+ 

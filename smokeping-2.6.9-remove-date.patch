@@ -1,0 +1,10 @@
+--- smokeping-2.6.9/lib/Smokeping.pm~	2013-03-04 14:16:57.000000000 +0100
++++ smokeping-2.6.9/lib/Smokeping.pm	2014-03-26 19:51:13.498388263 +0100
+@@ -1948,7 +1948,6 @@
+                                     sendmail $cfg->{Alerts}{from},$to, <<ALERT;
+ To: $to
+ From: $cfg->{Alerts}{from}
+-Date: $rfc2822stamp
+ $mail
+ ALERT
+                             }
