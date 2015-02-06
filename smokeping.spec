@@ -4,7 +4,7 @@
 Summary:          Latency Logging and Graphing System
 Name:             smokeping
 Version:          2.6.9
-Release:          1
+Release:          2
 License:          GPLv2+
 Group:            Networking/WWW
 URL:              http://oss.oetiker.ch/smokeping/
