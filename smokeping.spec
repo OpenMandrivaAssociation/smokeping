@@ -7,7 +7,7 @@ Version:          2.6.9
 Release:          2
 License:          GPLv2+
 Group:            Networking/WWW
-URL:              http://oss.oetiker.ch/smokeping/
+URL:              https://oss.oetiker.ch/smokeping/
 Source0:          http://oss.oetiker.ch/smokeping/pub/smokeping-%{version}.tar.gz
 Source1:          smokeping.service
 Source3:          http://oss.oetiker.ch/smokeping-demo/img/smokeping.png
